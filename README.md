@@ -1,7 +1,7 @@
 # Recipes-and-Food-Calorie-Prediction
 A DSC80 Project
 
-Framing the Problem
+## Framing the Problem
 
 Our prediction problem is: Predict the number of calories
 
@@ -15,7 +15,7 @@ We chose to use R^2 as our metric, since we are using a regression model. R^2 is
 
 At the current time, we know the features that were given to us in the data frames that we had merged together from Food.com. Some of these features include nutrients,minutes, and number of steps. We can use some of these features in our prediction as the date for all these recipes have come before 2022. 
 
-Baseline Model
+## Baseline Model
 
 
 We decided to use a linear regression model as our baseline model. The features we chose were `carbohydrates`, `protein`, and `n_ingredients`. 
