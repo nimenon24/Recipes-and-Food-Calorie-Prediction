@@ -114,4 +114,4 @@ Our test statistic was the difference in R^2 scores (dessert - non-dessert), and
 
 Our significance level was 0.01. Our resulting p-value was very close to 0, which is significant. 
 
-This means that our model appears to not be fair when looking at its performance between dessert recipes and non-dessert recipes; we can say with 99% that our model does a better job predicting the number of calories for dessert recipes than for non-dessert recipes. 
+This means that our model appears to not be fair when looking at its performance between dessert recipes and non-dessert recipes; we can say with 99% confidence that our model does a better job predicting the number of calories for dessert recipes than for non-dessert recipes. 
