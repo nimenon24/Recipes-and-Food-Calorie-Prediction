@@ -1,5 +1,4 @@
 # Recipes-and-Food-Calorie-Prediction
-A DSC80 Project
 
 ## Framing the Problem
 
@@ -32,10 +31,88 @@ The performance of our model was R^2 which was accuracy was about 0.802578101468
 . Based on the accuracy score, this suggests that our model is pretty “good” in predicting a linear relationship. We decided this because our score for R^2 is fairly close to 1 which is where the r^2 score tells us that it is a good linear fit. 
 
 
+## Final Model
+
+When we were building upon our baseline model, we decided to include all variables that could influence the number of calories for a food. We decided to include `sugar`, `total fat`, `rating`, and (in addition to `carbohydrates`, `protein`, and `n_ingredients`).
+
+We included these because we thought that they also influenced the calorie content of each recipe, in the case of `sugar` and `total fat`, or could provide us a hint in regards to how good it tasted (as in the case of `rating`). Typically, as fat and sugar increase, so does the number of calories in a recipe–they are positively correlated. 
+
+We decided to transform sugar by using the StandardScalar transformer as we wanted to make sure that the measurements were contributing equally and were on the same scale to make a fair prediction later on. 
+
+We decided to use the QuantileTransformer on total fat as our distribution was right-skewed, and we wanted to spread out very common fat values. The QuantileTransformer would allow us to do this as it would transform the feature into a uniform distribution. 
+
+For `rating`, we decided to use one-hot encoding because it was a categorical variable. 
+
+We tried three different regression models: linear regression, decision tree regression, and random forest regression. For each model, we tried different combinations of our features, and passed the rest of the variables through. Then, we found the average r^2 value across all folds for each combination.
+
+Linear regression combinations and their mean r^2 values across all folds:
+|                                             |        0 |
+|:--------------------------------------------|---------:|
+| quant fat + quant sugar                     | 0.839824 |
+| quant fat + std sugar                       | 0.84275  |
+| quant fat + std sugar + rating              | 0.84276  |
+| quant fat + quant carb + std sugar + rating | 0.772188 |
+| all                                         | 0.758055 |
 
 
 
+Decision Tree combinations and their mean r^2 values across all folds:
+|                                             |        0 |
+|:--------------------------------------------|---------:|
+| quant fat + quant sugar                     | 0.969414 |
+| quant fat + std sugar                       | 0.97254  |
+| quant fat + std sugar + rating              | 0.96695  |
+| quant fat + quant carb + std sugar + rating | 0.975035 |
+| all                                         | 0.973825 |
+
+
+Random Forest combinations and their mean r^2 values across all folds:
+
+|                                             |        0 |
+|:--------------------------------------------|---------:|
+| quant fat + quant sugar                     | 0.965452 |
+| quant fat + std sugar                       | 0.967322 |
+| quant fat + std sugar + rating              | 0.963469 |
+| quant fat + quant carb + std sugar + rating | 0.965212 |
+| all                                         | 0.966005 |
+
+
+We found the optimal combination to be using total fat (with Quantile Transformer) and sugar (with Standard Scaler). Although our Decision Tree Regressor with all variables (Standard Scaler for sugar, and Quantile Transformer for `total fat`, `protein`, and `n_ingredients`) had a higher score, we decided to go with the simpler model since the difference was quite small–only around 0.01.
+
+After we found the optimal combination, we then used `GridSearchCV` to find the best parameters (such as maximum depth and the minimum sample size) for our Decision Tree and Random Forest Regressions. 
+
+We found the following training and test r^2 scores for each model:
+
+Linear Regression: 
+Training: 0.8480349912087494
+Testing: 0.8347615240995385
+
+Our best Decision Tree, with `max_depth= None` and `min_samples_split = 2`: 
+Training: 0.9993726305010362
+Testing: 0.9667203773211627
+
+Our best Random Forest, with parameters `max_depth = 7`, `min_samples_split' = 3`, and `n_estimators = 7`: 
+Training: 0.9835020497209663
+Testing: 0.9791101623648127
+
+
+We found that using a decision tree regression, with parameters `max_depth= None` and `min_samples_split = 2`, yielded the highest r^2 values for both our training and test dataset. 
 
 
 
+## Fairness Analysis
+
+We decided to explore if our model performed similarly for dessert recipes and non-dessert recipes. 
+
+For our evaluation metric, we decide to continue to use R^2.
+
+Our null hypothesis was:
+The model's score is the same for both dessert recipes and non-dessert recipes, and any differences are due to chance.
+
+Our alternative hypothesis was: 
+The model's score is higher for dessert recipes.
+
+Our test statistic was the difference in r^2 scores (dessert - non-dessert).
+
+Our significance level was 0.01. Our resulting p-value was close to 0, which is significant. 
 
